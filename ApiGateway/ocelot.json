@@ -1,0 +1,98 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "booking-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/booking-service/swagger/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Priority": 1
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "inventory-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/inventory-service/swagger/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Priority": 1
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/user-service/swagger/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Priority": 1
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/bookings/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "booking-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/bookings/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "Priority": 2
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/hotels/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "inventory-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/hotels/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "Priority": 2
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/users/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/users/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "Priority": 2
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "Priority": 2
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:8080"
+  }
+}

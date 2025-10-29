@@ -1,0 +1,96 @@
+﻿services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+    networks:
+      - hotelnet
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: InventoryService/Dockerfile
+    container_name: inventory-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Username=postgres;Password=postgres;Database=db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hotelnet
+    ports:
+      - "8082:80"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: UserService/Dockerfile
+    container_name: user-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Username=postgres;Password=postgres;Database=db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hotelnet
+    ports:
+      - "8083:80"
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: BookingService/Dockerfile
+    container_name: booking-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Username=postgres;Password=postgres;Database=db
+      - ServiceUrls__InventoryService=http://inventory-service:80
+      - ServiceUrls__UserService=http://user-service:80
+    depends_on:
+      - postgres
+      - inventory-service
+      - user-service
+    networks:
+      - hotelnet
+    ports:
+      - "8081:80"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    container_name: api-gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8080:80"
+    depends_on:
+      - booking-service
+      - inventory-service
+      - user-service
+    networks:
+      - hotelnet
+
+networks:
+  hotelnet:
+
+volumes:
+  postgres_data:

@@ -1,0 +1,34 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "booking",
+      "Config": [
+        {
+          "Name": "Booking Service",
+          "Version": "v1",
+          "Url": "http://booking-service.hotel-env.internal/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "inventory",
+      "Config": [
+        {
+          "Name": "Inventory Service",
+          "Version": "v1",
+          "Url": "http://inventory-service.hotel-env.internal/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "user",
+      "Config": [
+        {
+          "Name": "User Service",
+          "Version": "v1",
+          "Url": "http://user-service.hotel-env.internal/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
