@@ -7,18 +7,9 @@
 [![Azure](https://img.shields.io/badge/Azure-Container_Apps-0078D4?style=for-the-badge&logo=microsoftazure)](https://azure.microsoft.com/)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
 
-**Status:** 🟢 **Live** 
+🖥️ Frontend : https://overbooked-ui.vercel.app
 
-
-**Frontend Application:** [https://hotel-booking-app-ui-nine.vercel.app/](https://hotel-booking-app-ui-nine.vercel.app/)  
-_Note: Frontend-backend integration is currently in process_
-
-
-
-## 🚀 Live URL
-```
-https://api-gateway.happyforest-8a2b009f.uksouth.azurecontainerapps.io
-```
+⚙️ Backend (API Gateway): https://api-gateway.happyforest-8a2b009f.uksouth.azurecontainerapps.io
 
 ### Interactive API Documentation (Swagger UI)
 
