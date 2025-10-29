@@ -4,6 +4,7 @@ namespace BookingService.Application.Services;
 
 public interface IBookingService
 {
-    Task<ReservationReceipt> ReserveRoomAsync(ReservationRequest req, string idempotencyKey);
+    Task<BookingDetailsResponse> ReserveRoomAsync(ReservationRequest req, string idempotencyKey);
     Task<BookingDetailsResponse> GetBookingByReferenceAsync(string bookingReference);
+    Task<List<BookingDetailsResponse>> GetBookingsByUserIdAsync(Guid userId);
 }

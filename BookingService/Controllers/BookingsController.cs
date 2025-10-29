@@ -43,6 +43,26 @@ public class BookingsController : ControllerBase
     }
 
     /// <summary>
+    ///     Gets all bookings for a specific user.
+    /// </summary>
+    /// <param name="userId">
+    ///     The user's unique identifier (GUID).
+    /// </param>
+    /// <returns>
+    ///     Returns a list of all bookings associated with the user, ordered by creation date (newest first).
+    /// </returns>
+    /// <response code="200">Bookings retrieved successfully (may be empty list if user has no bookings).</response>
+    /// <response code="400">Invalid user ID format.</response>
+    [HttpGet("user/{userId:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<List<BookingDetailsResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetUserBookings([FromRoute] Guid userId)
+    {
+        var result = await _bookingService.GetBookingsByUserIdAsync(userId);
+        return Ok(ApiResponse<List<BookingDetailsResponse>>.Ok(result, "User bookings retrieved successfully."));
+    }
+
+    /// <summary>
     ///     Creates a new hotel room booking.
     /// </summary>
     /// <param name="idempotencyKey">
@@ -61,7 +81,7 @@ public class BookingsController : ControllerBase
     /// <response code="500">An unexpected error occurred while processing the booking.</response>
     [HttpPost("reserve")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(ApiResponse<ReservationReceipt>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<BookingDetailsResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ReserveRoom(
@@ -74,6 +94,6 @@ public class BookingsController : ControllerBase
                 new { Header = "Idempotency-Key" });
 
         var result = await _bookingService.ReserveRoomAsync(request, idempotencyKey);
-        return Ok(ApiResponse<ReservationReceipt>.Ok(result, "Booking created successfully."));
+        return Ok(ApiResponse<BookingDetailsResponse>.Ok(result, "Booking created successfully."));
     }
 }

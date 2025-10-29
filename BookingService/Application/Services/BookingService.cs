@@ -25,7 +25,7 @@ public class BookingService : IBookingService
         _db = db;
     }
 
-    public async Task<ReservationReceipt> ReserveRoomAsync(
+    public async Task<BookingDetailsResponse> ReserveRoomAsync(
         ReservationRequest request,
         string idempotencyKey)
     {
@@ -68,8 +68,29 @@ public class BookingService : IBookingService
             await _repo.SaveChangesAsync();
             await tx.CommitAsync();
 
-            return reservation;
-            ;
+            var hotel = await _inventory.GetHotelSummaryAsync(booking.HotelId);
+
+            return new BookingDetailsResponse
+                {
+                    BookingReference = booking.BookingReference,
+                    HotelId = booking.HotelId,
+                    HotelName = hotel?.Name ?? "",
+                    HotelImageUrl = hotel?.ImageUrl ?? "",
+                    UserId = booking.UserId,
+                    CheckIn = booking.CheckIn,
+                    CheckOut = booking.CheckOut,
+                    Guests = booking.Guests,
+                    TotalCost = booking.TotalCost,
+                    CreatedAt = booking.CreatedAt,
+                    Rooms = booking.Rooms.Select(r => new ReservedRoom
+                    {
+                        RoomCategoryId = r.RoomCategoryId,
+                        Quantity = r.Quantity,
+                        BaseRate = r.BaseRate,
+                        Subtotal = r.Subtotal
+                    }).ToList()
+                };
+            
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
@@ -114,6 +135,45 @@ public class BookingService : IBookingService
                 Subtotal = r.Subtotal
             }).ToList()
         };
+    }
+
+    public async Task<List<BookingDetailsResponse>> GetBookingsByUserIdAsync(Guid userId)
+    {
+        var bookings = await _repo.GetBookingsByUserIdAsync(userId);
+        
+        if (!bookings.Any())
+            return new List<BookingDetailsResponse>();
+
+        var hotelIds = bookings.Select(b => b.HotelId).Distinct().ToList();
+        var hotels = new Dictionary<Guid, HotelSummary>();
+
+        foreach (var hotelId in hotelIds)
+        {
+            var hotel = await _inventory.GetHotelSummaryAsync(hotelId);
+            if (hotel != null)
+                hotels[hotelId] = hotel;
+        }
+
+        return bookings.Select(booking => new BookingDetailsResponse
+        {
+            BookingReference = booking.BookingReference,
+            HotelId = booking.HotelId,
+            HotelName = hotels.ContainsKey(booking.HotelId) ? hotels[booking.HotelId].Name : "Unknown Hotel",
+            HotelImageUrl = hotels.ContainsKey(booking.HotelId) ? hotels[booking.HotelId].ImageUrl : "",
+            UserId = booking.UserId,
+            CheckIn = booking.CheckIn,
+            CheckOut = booking.CheckOut,
+            Guests = booking.Guests,
+            TotalCost = booking.TotalCost,
+            CreatedAt = booking.CreatedAt,
+            Rooms = booking.Rooms.Select(r => new ReservedRoom
+            {
+                RoomCategoryId = r.RoomCategoryId,
+                Quantity = r.Quantity,
+                BaseRate = r.BaseRate,
+                Subtotal = r.Subtotal
+            }).ToList()
+        }).ToList();
     }
 
     private static string GenerateReference()

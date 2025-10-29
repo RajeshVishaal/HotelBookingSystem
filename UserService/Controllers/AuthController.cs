@@ -84,4 +84,23 @@ public class AuthController : ControllerBase
             ? Ok(ApiResponse<AuthResponse>.Ok(result.Data, result.Message))
             : Unauthorized(ApiResponse<object>.Fail(result.Message));
     }
+
+    /// <summary>
+    ///     Logs out the current user.
+    /// </summary>
+    /// <returns>
+    ///     Returns a success message indicating the user has been logged out.
+    /// </returns>
+    /// <response code="200">Logout successful.</response>
+    /// <remarks>
+    ///     Since this is a stateless API, logout is primarily handled on the client side
+    ///     by clearing stored tokens or session data. This endpoint serves as a confirmation
+    ///     for the logout action and can be used for logging purposes.
+    /// </remarks>
+    [HttpPost("logout")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public IActionResult Logout()
+    {
+        return Ok(ApiResponse<object>.Ok(new { }, "Logout successful. Please clear your local session."));
+    }
 }

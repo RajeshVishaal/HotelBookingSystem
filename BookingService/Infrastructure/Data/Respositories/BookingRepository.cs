@@ -30,6 +30,15 @@ public class BookingRepository : IBookingRepository
             .FirstOrDefaultAsync(b => b.IdempotencyKey == idempotencyKey);
     }
 
+    public async Task<List<Booking>> GetBookingsByUserIdAsync(Guid userId)
+    {
+        return await _db.Bookings
+            .Include(b => b.Rooms)
+            .Where(b => b.UserId == userId)
+            .OrderByDescending(b => b.CreatedAt)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 
     public async Task AddAsync(Booking booking)
     {

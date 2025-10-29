@@ -283,7 +283,7 @@ public class HotelRepository : IHotelRepository
             await transaction.RollbackAsync();
             throw;
         }
-    }
+    }       
 
     public async Task<HotelDetails?> GetHotelDetailsAsync(
         Guid hotelId,
