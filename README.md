@@ -7,6 +7,9 @@
 [![Azure](https://img.shields.io/badge/Azure-Container_Apps-0078D4?style=for-the-badge&logo=microsoftazure)](https://azure.microsoft.com/)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
 
+
+ 🚧 Status : The live demo is currently paused. You can still run it locally with Docker Compose.
+
 🖥️ Frontend : https://overbooked-ui.vercel.app
 
 ⚙️ Backend (API Gateway): https://api-gateway.happyforest-8a2b009f.uksouth.azurecontainerapps.io
